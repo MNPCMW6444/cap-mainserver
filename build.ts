@@ -23,7 +23,7 @@ import childProcess from "child_process";
  */
 function remove(loc: string): Promise<void> {
   return new Promise((res, rej) => {
-    return fs.remove(loc, (err) => {
+    return fs.remove(loc, (err: any) => {
       return !!err ? rej(err) : res();
     });
   });
