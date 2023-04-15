@@ -7,9 +7,7 @@
     "prestart": "npm run build",
     "start": "node ./dist --env=production",
     "predev": "npm install",
-    "dev": "nodemon",
-    "test": "nodemon --config ./spec/nodemon.json",
-    "test:no-reloading": "npx ts-node -r tsconfig-paths/register ./spec"
+    "dev": "nodemon"
   },
   "nodemonConfig": {
     "watch": [
@@ -19,7 +17,7 @@
     "ignore": [
       "src/public"
     ],
-    "exec": "./node_modules/.bin/ts-node -r tsconfig-paths/register ./src"
+    "exec": "./node_modules/.bin/ts-node ./src"
   },
   "_moduleAliases": {
     "@services": "dist/services",
@@ -47,6 +45,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/multer": "^1.4.7",
     "@types/uuid": "^9.0.1",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1"
   }
 }
