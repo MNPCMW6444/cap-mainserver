@@ -72,3 +72,17 @@ app.get("/api/lenders/suitable", async (req, res) => {
       .json({ message: "An error occurred while processing the request." });
   }
 });
+
+import passport from "passport";
+
+// LinkedIn authentication route
+app.get("/auth/linkedin", passport.authenticate("linkedin"));
+
+// LinkedIn callback route
+app.get(
+  "/auth/linkedin/callback",
+  passport.authenticate("linkedin"),
+  (req, res) => {
+    // Handle successful authentication and redirect the user
+  }
+);
