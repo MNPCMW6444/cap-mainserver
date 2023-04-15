@@ -1,0 +1,55 @@
+{
+  "name": "profitpal-server-w2",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "npx ts-node build.ts",
+    "lint": "eslint . --ext .ts",
+    "prestart": "npm run build",
+    "start": "node ./dist --env=production",
+    "predev": "npm install",
+    "dev": "nodemon",
+    "test": "nodemon --config ./spec/nodemon.json",
+    "test:no-reloading": "npx ts-node -r tsconfig-paths/register ./spec"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts, html",
+    "ignore": [
+      "src/public"
+    ],
+    "exec": "./node_modules/.bin/ts-node -r tsconfig-paths/register ./src"
+  },
+  "_moduleAliases": {
+    "@services": "dist/services",
+    "@repos": "dist/repos",
+    "@entities": "dist/entities",
+    "@shared": "dist/shared",
+    "@server": "dist/server",
+    "@routes": "dist/routes"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "docusign-esign": "^6.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "fs-extra": "^11.1.1",
+    "jet-logger": "^1.3.1",
+    "mongoose": "^7.0.3",
+    "multer": "^1.4.5-lts.1",
+    "tsc": "^2.0.4",
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.13",
+    "@types/docusign-esign": "^5.19.0",
+    "@types/fs-extra": "^11.0.1",
+    "@types/multer": "^1.4.7",
+    "@types/uuid": "^9.0.1",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1"
+  }
+}
