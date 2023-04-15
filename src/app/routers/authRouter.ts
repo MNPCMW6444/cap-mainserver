@@ -2,12 +2,12 @@ import express from "express";
 import linkedinRouter from "./auth/linkdeinRouter";
 import User from "../models/userModel";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
 import { passwordStrength } from "check-password-strength";
 import RequestForAccount from "../models/requestForAccountModal";
-import { signupreq } from "../../content/email-templates/authEmails";
-
+import { passreset, signupreq } from "../../content/email-templates/authEmails";
+import RequestForPassChange from "../models/requestForPassChangeModal";
 const router = express.Router();
 
 router.post("/signin", async (req, res) => {
@@ -279,11 +279,11 @@ router.post("/passresfin", async (req, res) => {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const user = (await User.find({ email }))[0];
-    user.neurons = user.neurons | 0;
-    user.deactivated = false;
-    user.notifications = false;
-    user.newsletter = false;
-    user.deleted = false;
+    // user.neurons = user.neurons | 0;
+    //user.deactivated = false;
+    //user.notifications = false;
+    //user.newsletter = false;
+    //user.deleted = false;
     user.passwordHash = passwordHash;
     await user.save();
     res.json({ changed: "yes" });
@@ -311,8 +311,8 @@ router.post("/updaten", async (req, res) => {
     const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
     const userId = (validatedUser as JwtPayload).id;
     const user = (await User.find({ userId }))[0];
-    user.notifications = notifications;
-    user.newsletter = newsletter;
+    // user.notifications = notifications;
+    // user.newsletter = newsletter;
     await user.save();
     res.json({ changed: "yes" });
   } catch (err) {
