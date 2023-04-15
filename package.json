@@ -19,14 +19,6 @@
     ],
     "exec": "./node_modules/.bin/ts-node ./src"
   },
-  "_moduleAliases": {
-    "@services": "dist/services",
-    "@repos": "dist/repos",
-    "@entities": "dist/entities",
-    "@shared": "dist/shared",
-    "@server": "dist/server",
-    "@routes": "dist/routes"
-  },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.0",
