@@ -3,7 +3,7 @@ import { Strategy as LinkedInStrategy } from "passport-linkedin-oauth2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
 import { Strategy as TwitterStrategy } from "passport-twitter";
-import { User } from "./models/userModel";
+import { User } from "../../models/userModel";
 
 passport.serializeUser((user, done) => {
   done(null, (user as User)._id);
