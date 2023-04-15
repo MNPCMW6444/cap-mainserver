@@ -39,9 +39,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-linkedin-oauth2": "^2.0.0",
     "passport-twitter": "^1.0.4",
-    "typescript": "^5.0.4"
-  },
-  "devDependencies": {
+    "typescript": "^5.0.4",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
@@ -54,7 +52,9 @@
     "@types/passport-google-oauth20": "^2.0.11",
     "@types/passport-linkedin-oauth2": "^1.5.3",
     "@types/passport-twitter": "^1.0.37",
-    "@types/uuid": "^9.0.1",
+    "@types/uuid": "^9.0.1"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1"
   }
