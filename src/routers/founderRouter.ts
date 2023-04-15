@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import fs from "fs";
-import Founder from "../models/founderModel";
+import Founder from "../models/borrowerModel";
 
 const storage = multer.memoryStorage(); // store files in memory as buffers
 const upload = multer({ storage: storage });

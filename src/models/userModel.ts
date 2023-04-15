@@ -1,13 +1,19 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const userModal = new mongoose.Schema(
+export interface User extends Document {
+  email: string;
+  name: string;
+  passwordHash: string;
+}
+
+const UserSchema = new Schema(
   {
-    Email: {
+    email: {
       type: String,
       required: true,
       unique: true,
     },
-    NAme: {
+    name: {
       type: String,
       required: true,
     },
@@ -18,4 +24,4 @@ const userModal = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("user", userModal);
+export default mongoose.model<User>("User", UserSchema);
