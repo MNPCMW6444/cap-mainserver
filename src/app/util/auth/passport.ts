@@ -4,6 +4,8 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
 import { Strategy as TwitterStrategy } from "passport-twitter";
 import { User } from "../../models/userModel";
+import dotenv from "dotenv";
+dotenv.config();
 
 function assertEnvVariable(variable: string | undefined, name: string): string {
   if (!variable) {
@@ -44,7 +46,7 @@ passport.use(
     }
   )
 );
-
+/* 
 // Google Strategy
 passport.use(
   new GoogleStrategy(
@@ -87,6 +89,6 @@ passport.use(
       // Handle user data and save or update the user in your database
     }
   )
-);
+); */
 
 export default passport;

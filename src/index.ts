@@ -14,9 +14,9 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 6555;
+app.use(cookieParser());
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 let mainDbStatus = false;
 
@@ -48,8 +48,6 @@ app.use(
     credentials: true,
   })
 );
-
-app.use(cookieParser());
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
