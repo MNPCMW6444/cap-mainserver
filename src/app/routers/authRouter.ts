@@ -87,7 +87,7 @@ router.post("/signupreq", async (req, res) => {
     const msg = {
       to: email,
       from: "service@neurobica.online",
-      subject: "Please Activate your Neurobica account",
+      subject: "Please Activate your CapHub account",
       html: signupreq(key),
     };
     sgMail
@@ -147,13 +147,8 @@ router.post("/signupfin", async (req, res) => {
     const passwordHash = await bcrypt.hash(password, salt);
     const savedUser = await new User({
       //serialNumber: (await User.find()).length + 1,
-      deactivated: false,
-      neurons: 0,
-      notifications: false,
-      newsletter: false,
-      deleted: false,
       email,
-      fullname,
+      name: fullname,
       passwordHash,
     }).save();
     const token = jwt.sign(
