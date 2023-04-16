@@ -7,11 +7,16 @@ import cookieParser from "cookie-parser";
 import authRouter from "./app/routers/authRouter";
 import founderRouter from "./app/routers/founderRouter";
 import apiRouter from "./app/routers/apiRouter";
+import passport from "passport";
+import "./app/util/auth/passport";
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 6555;
 
-dotenv.config();
+app.use(passport.initialize());
+app.use(passport.session());
 
 let mainDbStatus = false;
 

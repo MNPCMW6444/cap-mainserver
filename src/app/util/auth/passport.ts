@@ -5,6 +5,13 @@ import { Strategy as FacebookStrategy } from "passport-facebook";
 import { Strategy as TwitterStrategy } from "passport-twitter";
 import { User } from "../../models/userModel";
 
+function assertEnvVariable(variable: string | undefined, name: string): string {
+  if (!variable) {
+    throw new Error(`Missing environment variable: ${name}`);
+  }
+  return variable;
+}
+
 passport.serializeUser((user, done) => {
   done(null, (user as User)._id);
 });
@@ -17,11 +24,18 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // LinkedIn Strategy
+
 passport.use(
   new LinkedInStrategy(
     {
-      clientID: process.env.LINKEDIN_CLIENT_ID!,
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+      clientID: assertEnvVariable(
+        process.env.LINKEDIN_CLIENT_ID,
+        "LINKEDIN_CLIENT_ID"
+      ),
+      clientSecret: assertEnvVariable(
+        process.env.LINKEDIN_CLIENT_SECRET,
+        "LINKEDIN_CLIENT_SECRET"
+      ),
       callbackURL: "/auth/linkedin/callback",
       scope: ["r_emailaddress", "r_liteprofile"],
     },
