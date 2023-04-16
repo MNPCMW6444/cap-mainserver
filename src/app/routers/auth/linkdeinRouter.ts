@@ -1,6 +1,7 @@
 import express from "express";
 import passport from "passport";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const router = express.Router();
 
@@ -13,14 +14,15 @@ router.use(function (req, res, next) {
   next();
 });
 
-router.get(
-  "/",
-  (req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:5999");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    next();
-  },
-  passport.authenticate("linkedin")
+router.use(
+  "/auth/linkedin",
+  createProxyMiddleware({
+    target: "https://www.linkedin.com",
+    changeOrigin: true,
+    onProxyRes: (proxyRes, req, res) => {
+      proxyRes.headers["Access-Control-Allow-Origin"] = "http://localhost:5999";
+    },
+  })
 );
 
 router.get(
