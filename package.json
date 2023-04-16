@@ -53,9 +53,11 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-linkedin-oauth2": "^2.0.0",
     "passport-twitter": "^1.0.4",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@types/zxcvbn": "^4.4.1",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1"
   }

@@ -4,10 +4,11 @@ import User from "../models/userModel";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
-import { passwordStrength } from "check-password-strength";
 import RequestForAccount from "../models/requestForAccountModal";
 import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/requestForPassChangeModal";
+import zxcvbn from "zxcvbn";
+
 const router = express.Router();
 
 router.post("/signin", async (req, res) => {
@@ -116,12 +117,17 @@ router.post("/signupfin", async (req, res) => {
       return res.status(400).json({
         clientError: "At least one of the fields are missing",
       });
-    const passStrength = passwordStrength(password);
-    if (passStrength.id < 2)
+
+    // Minimum password score
+    const minPasswordScore = 3;
+
+    // Check password strength
+    const passwordStrength = zxcvbn(password);
+
+    if (passwordStrength.score < minPasswordScore)
       return res.status(400).json({
         clientError:
-          "Password isn't strong enough, the value is" +
-          passwordStrength(password).value,
+          "Password isn't strong enough, the value is" + passwordStrength.score,
       });
     if (password !== passwordagain)
       return res.status(400).json({
@@ -265,12 +271,17 @@ router.post("/passresfin", async (req, res) => {
       return res.status(400).json({
         clientError: "At least one of the fields are missing",
       });
-    const passStrength = passwordStrength(password);
-    if (passStrength.id < 2)
+
+    // Minimum password score
+    const minPasswordScore = 3;
+
+    // Check password strength
+    const passwordStrength = zxcvbn(password);
+
+    if (passwordStrength.score < minPasswordScore)
       return res.status(400).json({
         clientError:
-          "Password isn't strong enough, the value is" +
-          passwordStrength(password).value,
+          "Password isn't strong enough, the value is" + passwordStrength.score,
       });
     if (password !== passwordagain)
       return res.status(400).json({
