@@ -3,6 +3,7 @@ import passport from "passport";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { UserType } from "src/app/models/userModel";
+import dontenv from "dotenv";
 
 const router = express.Router();
 
@@ -61,6 +62,8 @@ router.use(function (req, res, next) {
 });
 
 router.get("/", passport.authenticate("linkedin"));
+
+dontenv.config();
 
 router.get(
   `/callback${
