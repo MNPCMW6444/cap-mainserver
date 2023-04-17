@@ -81,9 +81,8 @@ router.post("/signupreq", async (req, res) => {
       key,
     }).save();
 
-    sgMail.setApiKey(
-      "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" // Very-Sensitive
-    );
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+
     const msg = {
       to: email,
       from: "service@neurobica.online",
@@ -233,9 +232,8 @@ router.post("/passresreq", async (req, res) => {
       key,
     }).save();
 
-    sgMail.setApiKey(
-      "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" // Very-Sensitive
-    );
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+
     const msg = {
       to: email,
       from: "service@neurobica.online",
