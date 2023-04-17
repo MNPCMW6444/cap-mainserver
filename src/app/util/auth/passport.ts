@@ -3,7 +3,7 @@ import { Strategy as LinkedInStrategy } from "passport-linkedin-oauth2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
 import { Strategy as TwitterStrategy } from "passport-twitter";
-import { User } from "../../models/userModel";
+import User, { UserType } from "../../models/userModel";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -15,7 +15,7 @@ function assertEnvVariable(variable: string | undefined, name: string): string {
 }
 
 passport.serializeUser((user, done) => {
-  done(null, (user as User)._id);
+  done(null, (user as UserType)._id);
 });
 
 passport.deserializeUser(async (id, done) => {
@@ -27,6 +27,7 @@ passport.deserializeUser(async (id, done) => {
 
 // LinkedIn Strategy
 
+// ...
 passport.use(
   new LinkedInStrategy(
     {
@@ -42,10 +43,29 @@ passport.use(
       scope: ["r_emailaddress", "r_liteprofile"],
     },
     async (accessToken, refreshToken, profile, done) => {
-      // Handle user data and save or update the user in your database
+      try {
+        const existingUser = await User.findOne({ linkedinId: profile.id });
+
+        if (existingUser) {
+          done(null, existingUser);
+        } else {
+          const newUser = new User({
+            linkedinId: profile.id,
+            displayName: profile.displayName,
+            email: profile.emails[0].value,
+          });
+
+          await newUser.save();
+          done(null, newUser);
+        }
+      } catch (error) {
+        done(error);
+      }
     }
   )
 );
+// ...
+
 /* 
 // Google Strategy
 passport.use(

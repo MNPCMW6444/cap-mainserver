@@ -15,7 +15,6 @@ router.use(function (req, res, next) {
 });
 
 router.use(
-  "/auth/linkedin",
   createProxyMiddleware({
     target: "https://www.linkedin.com",
     changeOrigin: true,
@@ -24,6 +23,8 @@ router.use(
     },
   })
 );
+
+router.get("/", passport.authenticate("linkedin"));
 
 router.get(
   "/callback",
