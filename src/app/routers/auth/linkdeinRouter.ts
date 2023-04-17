@@ -5,24 +5,59 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 
 const router = express.Router();
 
+router.use(
+  "/oauth",
+  createProxyMiddleware({
+    target: "https://www.linkedin.com",
+    changeOrigin: true,
+    followRedirects: true, // Add this line to follow redirects
+    pathRewrite: {
+      "^/oauth": "/oauth",
+    },
+    onProxyReq: (proxyReq, req, res) => {
+      // Set CORS headers on the proxy request
+      proxyReq.setHeader(
+        "Access-Control-Allow-Origin",
+        "http://localhost:5999"
+      );
+      proxyReq.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, DELETE, OPTIONS"
+      );
+      proxyReq.setHeader(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
+    },
+    onProxyRes: (proxyRes, req, res) => {
+      proxyRes.headers["Access-Control-Allow-Origin"] = "http://localhost:5999";
+      proxyRes.headers["Access-Control-Allow-Methods"] =
+        "GET, POST, PUT, DELETE, OPTIONS";
+      proxyRes.headers["Access-Control-Allow-Headers"] =
+        "Origin, X-Requested-With, Content-Type, Accept";
+    },
+  })
+);
+
 router.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Origin",
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:5999"
+      : "https://app.caphub-funding.com"
+  );
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    return res.status(200).json({});
+  }
+
   next();
 });
-
-router.use(
-  createProxyMiddleware({
-    target: "https://www.linkedin.com",
-    changeOrigin: true,
-    onProxyRes: (proxyRes, req, res) => {
-      proxyRes.headers["Access-Control-Allow-Origin"] = "http://localhost:5999";
-    },
-  })
-);
 
 router.get("/", passport.authenticate("linkedin"));
 
