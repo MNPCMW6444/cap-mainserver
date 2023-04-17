@@ -86,7 +86,7 @@ router.get(
               ? false
               : process.env.NODE_ENV === "production" && true,
         })
-        .redirect("https://localhost:5999/");
+        .redirect("http://localhost:5999?auth=linkedin");
     } catch (err) {
       console.error(err);
       res
