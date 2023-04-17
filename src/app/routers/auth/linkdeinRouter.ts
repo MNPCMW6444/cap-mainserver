@@ -63,7 +63,11 @@ router.use(function (req, res, next) {
 router.get("/", passport.authenticate("linkedin"));
 
 router.get(
-  "/callback",
+  `/callback${
+    process.env.NODE_ENV === "development"
+      ? process.env.LINKEDIN_CLIENT_SECRET
+      : ""
+  }`,
   passport.authenticate("linkedin", { session: false }),
   (req, res) => {
     try {
