@@ -1,7 +1,8 @@
 import express from "express";
 import passport from "passport";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { UserType } from "src/app/models/userModel";
 
 const router = express.Router();
 
@@ -65,16 +66,33 @@ router.get(
   "/callback",
   passport.authenticate("linkedin", { session: false }),
   (req, res) => {
-    const user = req.user;
-    console.log(user);
-    const token = jwt.sign(
-      {
-        id: user,
-      } as JwtPayload,
-      "your_jwt_secret"
-    );
-    res.cookie("jwt", token, { httpOnly: true, secure: true });
-    res.redirect("/"); // Modify this line to redirect to your desired endpoint
+    try {
+      const user = req.user;
+      const token = jwt.sign(
+        {
+          id: (user as UserType)._id,
+        } as JwtPayload,
+        process.env.JWT_SECRET as Secret
+      );
+      res
+        .cookie("jwt", token, {
+          httpOnly: true,
+          sameSite:
+            process.env.NODE_ENV === "development"
+              ? "lax"
+              : process.env.NODE_ENV === "production" && "none",
+          secure:
+            process.env.NODE_ENV === "development"
+              ? false
+              : process.env.NODE_ENV === "production" && true,
+        })
+        .redirect("https://localhost:5999/");
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ serverError: "Unexpected error occurred in the server" });
+    }
   }
 );
 

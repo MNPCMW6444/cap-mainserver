@@ -19,10 +19,10 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-  // Replace this with a function that finds a user by ID in your database
-  // const user = await User.findById(id);
-  const user = null;
-  done(null, user);
+  console.log("deserializeUser");
+  console.log(id);
+  //const user = await User.findById(id);
+  done(null, null);
 });
 
 // LinkedIn Strategy
@@ -42,19 +42,21 @@ passport.use(
       callbackURL: "/auth/linkedin/callback",
       scope: ["r_emailaddress", "r_liteprofile"],
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (_, __, profile, done) => {
       try {
-        const existingUser = await User.findOne({ linkedinId: profile.id });
+        const userEmails = profile.emails.map(({ value }) => value);
+        const userPromises = userEmails.map((email) => User.findOne({ email }));
+        const users = await Promise.all(userPromises);
 
+        const existingUser = users.find((user) => user !== null);
         if (existingUser) {
           done(null, existingUser);
         } else {
           const newUser = new User({
-            linkedinId: profile.id,
-            displayName: profile.displayName,
             email: profile.emails[0].value,
+            name: profile.displayName,
+            passwordHash: "unset",
           });
-
           await newUser.save();
           done(null, newUser);
         }
@@ -64,6 +66,7 @@ passport.use(
     }
   )
 );
+
 // ...
 
 /* 
