@@ -1,8 +1,8 @@
 import Lender from "../models/lenderModel";
 import express from "express";
 import User from "../models/userModel";
+import { WebsiteFormData } from "@caphub-funding/caphub-types";
 const router = express.Router();
-import { FormData } from "../models/websiteFormDataModel";
 
 router.get("/lenders/suitable", async (req, res) => {
   try {
@@ -27,7 +27,7 @@ router.get("/lenders/suitable", async (req, res) => {
 
 router.post("/calculate", async (req, res) => {
   try {
-    const { formData }: { formData: FormData } = req.body;
+    const { formData }: { formData: WebsiteFormData } = req.body;
 
     const newUser = new User({
       email: formData.email,
