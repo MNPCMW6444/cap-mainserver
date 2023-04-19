@@ -2,6 +2,7 @@ import Lender from "../models/lenderModel";
 import express from "express";
 import User from "../models/userModel";
 const router = express.Router();
+import { FormData } from "../models/websiteFormDataModel";
 
 router.get("/lenders/suitable", async (req, res) => {
   try {
