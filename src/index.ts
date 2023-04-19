@@ -43,8 +43,12 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "development"
-        ? ["http://localhost:5999"]
-        : ["https://app.caphub-funding.com"],
+        ? ["http://localhost:5999", "http://localhost:5988"]
+        : [
+            "https://app.caphub-funding.com",
+            "https://www.caphub-funding.com",
+            "https://caphub-funding.com",
+          ],
     credentials: true,
   })
 );
