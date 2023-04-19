@@ -1,8 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
-
-export interface UserType extends Document {
-  formData: FormData;
-}
+import { SavedWebsiteFormData } from "@caphub-funding/caphub-types";
+import mongoose, { Schema } from "mongoose";
 
 const UserSchema = new Schema(
   {
@@ -16,4 +13,4 @@ const UserSchema = new Schema(
   }
 );
 
-export default mongoose.model<UserType>("User", UserSchema);
+export default mongoose.model<SavedWebsiteFormData>("User", UserSchema);

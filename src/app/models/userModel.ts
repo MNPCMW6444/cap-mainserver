@@ -1,10 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
-
-export interface UserType extends Document {
-  email: string;
-  name: string;
-  passwordHash: string;
-}
+import mongoose, { Schema } from "mongoose";
+import { CapHubUser } from "@caphub-funding/caphub-types";
 
 const UserSchema = new Schema(
   {
@@ -24,4 +19,4 @@ const UserSchema = new Schema(
   }
 );
 
-export default mongoose.model<UserType>("User", UserSchema);
+export default mongoose.model<CapHubUser>("User", UserSchema);
