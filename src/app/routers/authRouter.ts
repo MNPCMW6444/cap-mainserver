@@ -10,6 +10,7 @@ import RequestForPassChange from "../models/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 
 const router = express.Router();
+const MIN_PASSWORD_STRENGTH = 3;
 
 router.post("/signin", async (req, res) => {
   try {
@@ -118,12 +119,12 @@ router.post("/signupfin", async (req, res) => {
       });
 
     // Minimum password score
-    const minPasswordScore = 3;
+    const MIN_PASSWORD_STRENGTH = 3;
 
     // Check password strength
     const passwordStrength = zxcvbn(password);
 
-    if (passwordStrength.score < minPasswordScore)
+    if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
       return res.status(400).json({
         clientError:
           "Password isn't strong enough, the value is" + passwordStrength.score,
@@ -185,6 +186,46 @@ router.get("/signedin", async (req, res) => {
     const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
     const userId = (validatedUser as JwtPayload).id;
     res.json(await User.findById(userId));
+  } catch (err) {
+    return res.status(401).json({ errorMessage: "Unauthorized." });
+  }
+});
+
+router.post("/updatename", async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const { name } = req.body;
+    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
+    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const userId = (validatedUser as JwtPayload).id;
+    const user = await User.findById(userId);
+    if (user) user.name = name;
+    await user?.save();
+    res.json(user);
+  } catch (err) {
+    return res.status(401).json({ errorMessage: "Unauthorized." });
+  }
+});
+
+router.post("/updatepassword", async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const { password } = req.body;
+    const passwordStrength = zxcvbn(password);
+    if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
+      return res.status(400).json({
+        clientError:
+          "Password isn't strong enough, the value is" + passwordStrength.score,
+      });
+    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
+    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const userId = (validatedUser as JwtPayload).id;
+    const user = await User.findById(userId);
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+    if (user) user.passwordHash = passwordHash;
+    await user?.save();
+    res.json(user);
   } catch (err) {
     return res.status(401).json({ errorMessage: "Unauthorized." });
   }
@@ -266,12 +307,11 @@ router.post("/passresfin", async (req, res) => {
       });
 
     // Minimum password score
-    const minPasswordScore = 3;
 
     // Check password strength
     const passwordStrength = zxcvbn(password);
 
-    if (passwordStrength.score < minPasswordScore)
+    if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
       return res.status(400).json({
         clientError:
           "Password isn't strong enough, the value is" + passwordStrength.score,
