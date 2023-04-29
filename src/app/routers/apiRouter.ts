@@ -1,10 +1,10 @@
-import Lender from "../models/lenderModel";
 import express from "express";
+/* import Lender from "../models/lenderModel";
 import User from "../models/userModel";
-import { WebsiteFormData } from "@caphub-funding/caphub-types";
+import { WebsiteFormData } from "@caphub-funding/caphub-types"; */
 const router = express.Router();
 
-router.get("/lenders/suitable", async (req, res) => {
+/* router.get("/lenders/suitable", async (req, res) => {
   try {
     const {
       minDryPowder,
@@ -62,6 +62,6 @@ router.post("/calculate", async (req, res) => {
       .status(500)
       .json({ message: "An error occurred while processing the request." });
   }
-});
+}); */
 
 export default router;
