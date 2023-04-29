@@ -21,7 +21,7 @@ router.post("/calculate", async (req, res) => {
       await savedFormDataClean.save();
     }
     return res.status(200).json({
-      loanAmount: parseInt(formData.annualRevenue) * 0.7,
+      loanAmount: formData.annualRevenue.amount * 0.7,
       interest: 5.7,
       amortization: 342423,
     });
