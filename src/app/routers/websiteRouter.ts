@@ -1,6 +1,7 @@
 import { WebsiteFormData } from "@caphub-funding/caphub-types";
 import express from "express";
 import SavedToDBWebsiteForm from "../models/SavedToDBWebsiteForm";
+import userModel from "../models/userModel";
 const router = express.Router();
 
 router.post("/calculate", async (req, res) => {
@@ -11,6 +12,7 @@ router.post("/calculate", async (req, res) => {
       stringifiedFormData,
     });
     await savedFormData.save();
+    const usersWithThisEmail = await userModel.find({ email: formData.email });
     return res.status(200).json({
       loanAmount: parseInt(formData.annualRevenue) * 0.7,
       interest: 5.7,
