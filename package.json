@@ -3,6 +3,7 @@
   "version": "0.0.3",
   "scripts": {
     "build": "npx ts-node build.ts",
+    "update": "npx npm-check-updates -u",
     "lint": "eslint . --ext .ts",
     "prestart": "npm run build",
     "start": "node ./dist --env=production",
