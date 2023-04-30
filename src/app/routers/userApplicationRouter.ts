@@ -1,5 +1,9 @@
 import express from "express";
 import UserApplication from "../models/userApplicationModel";
+import { WebsiteFormData } from "@caphub-funding/caphub-types";
+import SavedToDBWebsiteForm from "../models/SavedToDBWebsiteForm";
+import userModel from "../models/userModel";
+import SavedToDBWebsiteFormClean from "../models/SavedToDBWebsiteFormClean";
 
 const router = express.Router();
 
@@ -19,7 +23,7 @@ router.get("/", async (req, res) => {
       await savedFormDataClean.save();
     }
     return res.status(200).json({
-      loanAmount: parseInt(formData.annualRevenue) * 0.7,
+      loanAmount: formData.annualRevenue.amount * 0.7,
       interest: 5.7,
       amortization: 342423,
     });

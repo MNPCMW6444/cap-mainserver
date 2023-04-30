@@ -1,6 +1,6 @@
 {
   "name": "caphub-server-main",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "scripts": {
     "build": "npx ts-node build.ts",
     "update": "npx npm-check-updates -u",
