@@ -2,7 +2,7 @@ import express from "express";
 import passport from "passport";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { CapHubUser } from "@caphub-funding/caphub-types";
+import { CapHubUser } from "@caphub-group/caphub-types";
 import dontenv from "dotenv";
 
 const router = express.Router();
@@ -46,7 +46,7 @@ router.use(function (req, res, next) {
     "Access-Control-Allow-Origin",
     process.env.NODE_ENV === "development"
       ? "http://localhost:5999"
-      : "https://app.caphub-funding.com"
+      : "https://app.caphub-group.com"
   );
   res.header(
     "Access-Control-Allow-Headers",

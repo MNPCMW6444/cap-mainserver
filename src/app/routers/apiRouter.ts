@@ -1,7 +1,7 @@
 import express from "express";
 /* import Lender from "../models/lenderModel";
 import User from "../models/userModel";
-import { WebsiteFormData } from "@caphub-funding/caphub-types"; */
+import { WebsiteFormData } from "@caphub-group/caphub-types"; */
 const router = express.Router();
 
 /* router.get("/lenders/suitable", async (req, res) => {

@@ -6,7 +6,7 @@ import { Strategy as TwitterStrategy } from "passport-twitter";
 import User from "../../models/userModel";
 import dotenv from "dotenv";
 
-import { CapHubUser } from "@caphub-funding/caphub-types";
+import { CapHubUser } from "@caphub-group/caphub-types";
 
 dotenv.config();
 

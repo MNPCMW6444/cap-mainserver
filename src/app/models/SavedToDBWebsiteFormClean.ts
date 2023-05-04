@@ -1,4 +1,4 @@
-import { SavedWebsiteFormData } from "@caphub-funding/caphub-types";
+import { SavedWebsiteFormData } from "@caphub-group/caphub-types";
 import mongoose, { Schema } from "mongoose";
 
 const SavedToDBWebsiteFormCleanSchema = new Schema(

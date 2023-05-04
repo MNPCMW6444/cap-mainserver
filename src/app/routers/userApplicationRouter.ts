@@ -1,6 +1,6 @@
 import express from "express";
 import UserApplication from "../models/userApplicationModel";
-import { WebsiteFormData } from "@caphub-funding/caphub-types";
+import { WebsiteFormData } from "@caphub-group/caphub-types";
 import SavedToDBWebsiteForm from "../models/SavedToDBWebsiteForm";
 import userModel from "../models/userModel";
 import SavedToDBWebsiteFormClean from "../models/SavedToDBWebsiteFormClean";

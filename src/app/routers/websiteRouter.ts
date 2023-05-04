@@ -1,4 +1,4 @@
-import { WebsiteFormData } from "@caphub-funding/caphub-types";
+import { WebsiteFormData } from "@caphub-group/caphub-types";
 import express from "express";
 import SavedToDBWebsiteForm from "../models/SavedToDBWebsiteForm";
 import SavedToDBWebsiteFormClean from "../models/SavedToDBWebsiteFormClean";

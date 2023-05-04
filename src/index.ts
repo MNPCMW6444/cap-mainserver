@@ -45,9 +45,9 @@ app.use(
       process.env.NODE_ENV === "development"
         ? ["http://localhost:5999"]
         : [
-            "https://app.caphub-funding.com",
-            "https://www.caphub-funding.com",
-            "https://caphub-funding.com",
+            "https://caphub.ai",
+            "https://www.caphub-group.com",
+            "https://caphub-group.com",
             "https://caphub-oc.netlify.com",
           ],
     credentials: true,

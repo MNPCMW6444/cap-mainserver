@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { CapHubUser } from "@caphub-funding/caphub-types";
+import { CapHubUser } from "@caphub-group/caphub-types";
 
 const UserApplicationSchema = new Schema(
   {},
