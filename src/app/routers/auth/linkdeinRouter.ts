@@ -2,7 +2,7 @@ import express from "express";
 import passport from "passport";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { CapHubUser } from "@caphub-group/caphub-types";
+import { CaphubUser } from "@caphub-group/caphub-types";
 import dontenv from "dotenv";
 
 const router = express.Router();
@@ -77,7 +77,7 @@ router.get(
       const user = req.user;
       const token = jwt.sign(
         {
-          id: (user as CapHubUser)._id,
+          id: (user as CaphubUser)._id,
         } as JwtPayload,
         process.env.JWT_SECRET as Secret
       );

@@ -6,7 +6,7 @@ import { Strategy as TwitterStrategy } from "passport-twitter";
 import User from "../../models/userModel";
 import dotenv from "dotenv";
 
-import { CapHubUser } from "@caphub-group/caphub-types";
+import { CaphubUser } from "@caphub-group/caphub-types";
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ function assertEnvVariable(variable: string | undefined, name: string): string {
 }
 
 passport.serializeUser((user, done) => {
-  done(null, (user as CapHubUser)._id);
+  done(null, (user as CaphubUser)._id);
 });
 
 passport.deserializeUser(async (id, done) => {

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { CapHubUser } from "@caphub-group/caphub-types";
+import { CaphubUser } from "@caphub-group/caphub-types";
 
 const UserSchema = new Schema(
   {
@@ -19,4 +19,4 @@ const UserSchema = new Schema(
   }
 );
 
-export default mongoose.model<CapHubUser>("User", UserSchema);
+export default mongoose.model<CaphubUser>("User", UserSchema);

@@ -1,6 +1,6 @@
 {
   "name": "caphub-server-main",
-  "version": "0.0.8",
+  "version": "0.0.13",
   "scripts": {
     "build": "npx ts-node build.ts",
     "update": "npx npm-check-updates -u",
@@ -25,7 +25,7 @@
     "exec": "./node_modules/.bin/ts-node ./src"
   },
   "dependencies": {
-    "@caphub-group/caphub-types": "^3.9.59",
+    "@caphub-group/caphub-types": "^3.9.62",
     "@sendgrid/mail": "^7.7.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
@@ -55,7 +55,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.0",
     "multer": "^1.4.5-lts.1",
-    "npm": "^9.6.5",
+    "npm": "^9.6.6",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
