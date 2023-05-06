@@ -19,7 +19,7 @@ ENV NPM_TOKEN=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
 
 RUN npm run update
 
-RUN npm ci
+RUN npm i
 
 # Copy the rest of the application code into the working directory
 COPY . .
