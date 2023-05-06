@@ -1,10 +1,12 @@
-FROM node:16
+FROM node:18
 
 WORKDIR /apps
 
 COPY package.json .
 
-RUN npm install
+ENV NPM_TOKEN=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
+RUN npm run update
+RUN npm i
 
 COPY . .
 
