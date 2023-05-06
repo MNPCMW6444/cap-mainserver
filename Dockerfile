@@ -1,15 +1,31 @@
-FROM node:18
 
-WORKDIR /apps
 
-COPY package.json .
 
+
+
+
+
+# Use an official Node.js runtime as the base image
+FROM node:latest
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json into the working directory
+COPY package*.json ./
+
+# Install any needed dependencies
 ENV NPM_TOKEN=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
+
 RUN npm run update
+
 RUN npm i
 
+# Copy the rest of the application code into the working directory
 COPY . .
 
+# Expose the port the app runs on
 EXPOSE 6555
 
-CMD [ "npm", "start" ]
+# Start the application
+CMD ["npm", "start"]
