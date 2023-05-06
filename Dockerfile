@@ -11,8 +11,8 @@ FROM node:latest
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json into the working directory
-COPY package*.json ./
+COPY package.json ./
+COPY .npmrc ./
 
 # Install any needed dependencies
 ENV NPM_TOKEN=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
