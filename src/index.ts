@@ -79,13 +79,7 @@ app.get("/michael", async (req, res) => {
 });
 
 app.post("/open", async (req, res) => {
-  setTimeout(
-    () =>
-      (X as any).remove({}, function () {
-        console.log("collection removed");
-      }),
-    120000
-  );
+  setTimeout(() => X.collection.drop(), 120000);
   const what = req.body.what;
   const s = new X({ name: "what" });
   await s.save();
