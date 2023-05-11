@@ -49,6 +49,7 @@ app.use(
             "https://www.caphub-group.com",
             "https://caphub-group.com",
             "https://caphub-oc.netlify.com",
+            "https://shaar.netlify.com",
           ],
     credentials: true,
   })
