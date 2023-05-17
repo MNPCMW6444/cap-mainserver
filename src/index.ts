@@ -3,7 +3,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import cookieParser from "cookie-parser";
-
 import authRouter from "./app/routers/authRouter";
 import apiRouter from "./app/routers/apiRouter";
 import websiteRouter from "./app/routers/websiteRouter";
