@@ -8,44 +8,39 @@ import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import dotenv from "dotenv";
-
+import nodemailer from "nodemailer";
 
 dotenv.config();
-
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
 
-const nodemailer = require('nodemailer');
-
-console.log(process.env.YOUR_CLIENT_ID)
 let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        type: 'OAuth2',
-        user: 'service@caphub.ai',
-        clientId: process.env.YOUR_CLIENT_ID,
-        clientSecret: process.env.YOUR_CLIENT_SECRET,
-        refreshToken: 'YOUR_REFRESH_TOKEN',
-        accessToken: 'YOUR_ACCESS_TOKEN'
-    }
+  service: "gmail",
+  auth: {
+    type: "OAuth2",
+    user: "service@caphub.ai",
+    clientId: process.env.GCP_CLIENT_ID,
+    clientSecret: process.env.GCP_SECRET,
+    refreshToken: process.env.GCP_REFRESH_TOKEN,
+    accessToken: process.env.GCP_ACCESS_TOKEN,
+  },
 });
 
 let mailOptions = {
-    from: 'service@caphub.ai',
-    to: 'user@example.com',
-    subject: 'Test',
-    text: 'Hello World!'
+  from: "service@caphub.ai",
+  to: "mnpcmw@gmail.com",
+  subject: "Test",
+  text: "Hello World!",
 };
 
-transporter.sendMail(mailOptions, function(err:any, info:any) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log('Email sent: ' + info.response);
-    }
+transporter.sendMail(mailOptions, function (err: any, info: any) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("Email sent: " + info.response);
+  }
 });
-
 
 router.post("/signin", async (req, res) => {
   try {
@@ -117,14 +112,13 @@ router.post("/signupreq", async (req, res) => {
       key,
     }).save();
 
-
     const msg = {
       to: email,
       from: "service@neurobica.online",
       subject: "Please Activate your CapHub account",
       html: signupreq(key),
     };
-  /*   sgMail
+    /*   sgMail
       .send(msg)
       .then(() => {
         console.log("Verification email sent");
@@ -307,14 +301,13 @@ router.post("/passresreq", async (req, res) => {
       key,
     }).save();
 
-
     const msg = {
       to: email,
       from: "service@neurobica.online",
       subject: "Password Reset Request",
       html: passreset(key),
     };
-   /*  sgMail
+    /*  sgMail
       .send(msg)
       .then(() => {
         console.log("reset email sent");

@@ -25,22 +25,7 @@
     "exec": "./node_modules/.bin/ts-node ./src"
   },
   "dependencies": {
-    "@caphub-group/caphub-types": "^3.9.94",
-    "@types/bcrypt": "^5.0.0",
-    "@types/cookie-parser": "^1.4.3",
-    "@types/cors": "^2.8.13",
-    "@types/docusign-esign": "^5.19.0",
-    "@types/express": "^4.17.17",
-    "@types/fs-extra": "^11.0.1",
-    "@types/jsonwebtoken": "^9.0.2",
-    "@types/mongoose": "^5.11.97",
-    "@types/multer": "^1.4.7",
-    "@types/passport-facebook": "^2.1.11",
-    "@types/passport-google-oauth20": "^2.0.11",
-    "@types/passport-linkedin-oauth2": "^1.5.3",
-    "@types/passport-twitter": "^1.0.37",
-    "@types/uuid": "^9.0.1",
-    "@types/zxcvbn": "^4.4.1",
+   
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -62,10 +47,25 @@
     "passport-linkedin-oauth2": "^2.0.0",
     "passport-twitter": "^1.0.4",
     "typescript": "^5.0.4",
-    "zxcvbn": "^4.4.2"
-  },
-  "devDependencies": {
+    "zxcvbn": "^4.4.2",
+     "@types/nodemailer": "^6.4.7",
     "nodemon": "^2.0.22",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+     "@caphub-group/caphub-types": "^3.9.94",
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.13",
+    "@types/docusign-esign": "^5.19.0",
+    "@types/express": "^4.17.17",
+    "@types/fs-extra": "^11.0.1",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/mongoose": "^5.11.97",
+    "@types/multer": "^1.4.7",
+    "@types/passport-facebook": "^2.1.11",
+    "@types/passport-google-oauth20": "^2.0.11",
+    "@types/passport-linkedin-oauth2": "^1.5.3",
+    "@types/passport-twitter": "^1.0.37",
+    "@types/uuid": "^9.0.1",
+    "@types/zxcvbn": "^4.4.1"
   }
 }
