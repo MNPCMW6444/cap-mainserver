@@ -3,14 +3,49 @@ import linkedinRouter from "./auth/linkdeinRouter";
 import User from "../models/userModel";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import sgMail from "@sendgrid/mail";
 import RequestForAccount from "../models/requestForAccountModal";
 import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
+import dotenv from "dotenv";
+
+
+dotenv.config();
+
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
+
+const nodemailer = require('nodemailer');
+
+console.log(process.env.YOUR_CLIENT_ID)
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        type: 'OAuth2',
+        user: 'service@caphub.ai',
+        clientId: process.env.YOUR_CLIENT_ID,
+        clientSecret: process.env.YOUR_CLIENT_SECRET,
+        refreshToken: 'YOUR_REFRESH_TOKEN',
+        accessToken: 'YOUR_ACCESS_TOKEN'
+    }
+});
+
+let mailOptions = {
+    from: 'service@caphub.ai',
+    to: 'user@example.com',
+    subject: 'Test',
+    text: 'Hello World!'
+};
+
+transporter.sendMail(mailOptions, function(err:any, info:any) {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('Email sent: ' + info.response);
+    }
+});
+
 
 router.post("/signin", async (req, res) => {
   try {
@@ -82,7 +117,6 @@ router.post("/signupreq", async (req, res) => {
       key,
     }).save();
 
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
     const msg = {
       to: email,
@@ -90,14 +124,14 @@ router.post("/signupreq", async (req, res) => {
       subject: "Please Activate your CapHub account",
       html: signupreq(key),
     };
-    sgMail
+  /*   sgMail
       .send(msg)
       .then(() => {
         console.log("Verification email sent");
       })
       .catch((error) => {
         console.error(error);
-      });
+      }); */
     res.json({ result: "email successfully sent to " + email });
   } catch (err) {
     console.error(err);
@@ -273,7 +307,6 @@ router.post("/passresreq", async (req, res) => {
       key,
     }).save();
 
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
     const msg = {
       to: email,
@@ -281,14 +314,14 @@ router.post("/passresreq", async (req, res) => {
       subject: "Password Reset Request",
       html: passreset(key),
     };
-    sgMail
+   /*  sgMail
       .send(msg)
       .then(() => {
         console.log("reset email sent");
       })
       .catch((error) => {
         console.error(error);
-      });
+      }); */
     res.json({ result: "email successfully sent to " + email });
   } catch (err) {
     console.error(err);
