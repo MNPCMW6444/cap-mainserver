@@ -53,7 +53,7 @@ async function sendEmail(
     from: "service@caphub-group.com",
     sender: "service@caphub-group.com",
     replyTo: "service@caphub-group.com",
-    to: "natanyoad@gmail.com",
+    to: "mnpcmw@gmail.com",
     subject: "Hello from Node.js!",
     text: "Hello world!",
   };
