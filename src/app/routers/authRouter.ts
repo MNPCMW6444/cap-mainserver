@@ -8,67 +8,6 @@ import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 
-import { google } from "googleapis";
-import nodemailer from "nodemailer";
-
-import dotenv from "dotenv";
-dotenv.config();
-
-async function refreshAccessToken(
-  clientId: string,
-  clientSecret: string,
-  refreshToken: string
-) {
-  const oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
-
-  oauth2Client.setCredentials({
-    refresh_token: refreshToken,
-  });
-
-  const result = await oauth2Client.getAccessToken();
-  return result.token;
-}
-
-async function sendEmail(
-  clientId: string,
-  clientSecret: string,
-  refreshToken: string,
-  accessToken: string
-) {
-  console.log(clientId, clientSecret, refreshToken, accessToken);
-
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: "michael@caphub-group.com",
-      clientId: clientId,
-      clientSecret: clientSecret,
-      refreshToken: refreshToken,
-      accessToken: accessToken,
-    },
-  });
-
-  let mailOptions = {
-    from: "service@caphub-group.com",
-    sender: "service@caphub-group.com",
-    replyTo: "service@caphub-group.com",
-    to: "mnpcmw@gmail.com",
-    subject: "Hello from Node.js!",
-    text: "Hello world!",
-  };
-
-  let result = await transporter.sendMail(mailOptions);
-  return result;
-}
-
-sendEmail(
-  process.env.CCP_CLIENT_ID || "",
-  process.env.CCP_SECRET || "",
-  process.env.GCP_REFRESH_TOKEN || "",
-  process.env.GCP_ACCESS_TOKEN || ""
-);
-
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
 

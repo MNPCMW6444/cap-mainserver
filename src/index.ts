@@ -56,13 +56,17 @@ app.use(
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
-app.get("/areyoualive", (_, res) => res.json({ answer: "yes" }));
+app.get("/areyoualive", (_, res) => {
+  //sendEmail("mnpcmw6444@gmail.com", "are you alive", "are you alive");
+  res.json({ answer: "yes" });
+});
 
 app.use("/api", apiRouter);
 app.use("/website", websiteRouter);
 app.use("/auth", authRouter);
 
 import X from "./app/models/nnn";
+import { sendEmail } from "./app/external-api-s/email";
 
 app.get("/michael", async (req, res) => {
   try {
