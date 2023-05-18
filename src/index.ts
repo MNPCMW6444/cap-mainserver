@@ -9,6 +9,8 @@ import websiteRouter from "./app/routers/websiteRouter";
 import passport from "passport";
 import "./app/util/auth/passport";
 
+import { sendEmail } from "./app/external-api-s/email";
+
 dotenv.config();
 
 const app = express();
@@ -66,7 +68,6 @@ app.use("/website", websiteRouter);
 app.use("/auth", authRouter);
 
 import X from "./app/models/nnn";
-import { sendEmail } from "./app/external-api-s/email";
 
 app.get("/michael", async (req, res) => {
   try {
