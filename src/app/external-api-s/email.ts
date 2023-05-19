@@ -1,44 +1,30 @@
-import { google } from "googleapis";
-import nodemailer from "nodemailer";
-
+// using Twilio SendGrid's v3 Node.js Library
+// https://github.com/sendgrid/sendgrid-nodejs
+import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
+
 dotenv.config();
+sgMail.setApiKey(process.env.SENDGRID || "");
 
-async function refreshAccessToken(
-  clientId: string,
-  clientSecret: string,
-  refreshToken: string
-) {
-  const oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
-
-  oauth2Client.setCredentials({
-    refresh_token: refreshToken,
-  });
-
-  const result = await oauth2Client.getAccessToken();
-  return result.token;
-}
-
-export async function sendEmail(to: string, subject: string, text: string) {
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: "michael@caphub-group.com",
-      clientId: process.env.GCP_CLIENT_ID || "",
-      clientSecret: process.env.GCP_SECRET || "",
-      refreshToken: process.env.GCP_REFRESH_TOKEN || "",
-      accessToken: process.env.GCP_ACCESS_TOKEN || "",
-    },
-  });
-
-  let mailOptions = {
-    from: "service@caphub-group.com",
+export const sendEmail = (
+  to: string,
+  subject: string,
+  text: string,
+  html: string
+) => {
+  const msg = {
+    from: "service@caphub.ai",
     to,
     subject,
     text,
+    html,
   };
-
-  let result = await transporter.sendMail(mailOptions);
-  return result;
-}
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};

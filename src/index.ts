@@ -57,14 +57,17 @@ app.use(
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
-app.get("/areyoualive", async (_, res) => {
-  console.log(
-    "finished",
-    await sendEmail("mnpcmw6444@gmail.com", "are you alive", "are you alive")
-  );
+app.get("/areyoualive", (_, res) => {
   res.json({ answer: "yes" });
 });
 
 app.use("/api", apiRouter);
 app.use("/website", websiteRouter);
 app.use("/auth", authRouter);
+
+sendEmail(
+  "mnpcmw@gmail.com",
+  "Sending with SendGrid is Fun",
+  "and easy to do anywhere, even with Node.js",
+  "<strong>and easy to do anywhere, even with Node.js</strong>"
+);
