@@ -25,16 +25,15 @@ export async function sendEmail(to: string, subject: string, text: string) {
     auth: {
       type: "OAuth2",
       user: "michael@caphub-group.com",
-      clientId: process.env.CCP_CLIENT_ID || "",
-      clientSecret: process.env.CCP_SECRET || "",
+      clientId: process.env.GCP_CLIENT_ID || "",
+      clientSecret: process.env.GCP_SECRET || "",
       refreshToken: process.env.GCP_REFRESH_TOKEN || "",
       accessToken: process.env.GCP_ACCESS_TOKEN || "",
     },
   });
 
   let mailOptions = {
-    from: "michael@caphub-group.com",
-    sender: "service@caphub-group.com",
+    from: "service@caphub-group.com",
     to,
     subject,
     text,
