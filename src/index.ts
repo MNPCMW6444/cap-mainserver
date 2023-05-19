@@ -58,8 +58,10 @@ app.use(
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
-app.get("/areyoualive", (_, res) => {
-  //sendEmail("mnpcmw6444@gmail.com", "are you alive", "are you alive");
+app.get("/areyoualive", async (_, res) => {
+  console.log(
+    await sendEmail("mnpcmw6444@gmail.com", "are you alive", "are you alive")
+  );
   res.json({ answer: "yes" });
 });
 
