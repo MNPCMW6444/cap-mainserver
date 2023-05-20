@@ -9,8 +9,6 @@ import websiteRouter from "./app/routers/websiteRouter";
 import passport from "passport";
 import "./app/util/auth/passport";
 
-import { sendEmail } from "./app/external-api-s/email";
-
 dotenv.config();
 
 const app = express();
@@ -64,10 +62,3 @@ app.get("/areyoualive", (_, res) => {
 app.use("/api", apiRouter);
 app.use("/website", websiteRouter);
 app.use("/auth", authRouter);
-
-sendEmail(
-  "mnpcmw@gmail.com",
-  "Sending with SendGrid is Fun",
-  "and easy to do anywhere, even with Node.js",
-  "<strong>and easy to do anywhere, even with Node.js</strong>"
-);
