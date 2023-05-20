@@ -105,8 +105,8 @@ router.post("/signupreq", async (req, res) => {
 
 router.post("/signupfin", async (req, res) => {
   try {
-    const { email, key, fullname, password, passwordagain } = req.body;
-    if (!email || !key || !fullname || !password || !passwordagain)
+    const { key, fullname, password, passwordagain } = req.body;
+    if (!key || !fullname || !password || !passwordagain)
       return res.status(400).json({
         clientError: "At least one of the fields are missing",
       });
@@ -131,19 +131,21 @@ router.post("/signupfin", async (req, res) => {
       return res.status(400).json({
         clientError: "Passwords doesn't match",
       });
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({
+      email: existingSignupRequest.email,
+    });
     if (existingUser)
       return res.status(400).json({
         clientError: "An account with this email already exists",
       });
-    if (!existingSignupRequest || existingSignupRequest.email !== email)
+    if (!existingSignupRequest)
       return res.status(400).json({
         clientError: "The key is wrong",
       });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const savedUser = await new User({
-      email,
+      email: existingSignupRequest.email,
       name: fullname,
       passwordHash,
     }).save();
