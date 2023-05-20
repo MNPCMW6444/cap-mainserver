@@ -75,9 +75,7 @@ router.post("/signupreq", async (req, res) => {
         clientError: "An account with this email already exists",
       });
     const key = Math.floor(Math.random() * 1000000);
-    const savedRequest = await new RequestForAccount({
-      //serialNumber: (await RequestForAccount.find()).length + 1,
-
+    await new RequestForAccount({
       email,
       key,
     }).save();
@@ -106,10 +104,8 @@ router.post("/signupfin", async (req, res) => {
         clientError: "At least one of the fields are missing",
       });
 
-    // Minimum password score
     const MIN_PASSWORD_STRENGTH = 3;
 
-    // Check password strength
     const passwordStrength = zxcvbn(password);
 
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -134,7 +130,6 @@ router.post("/signupfin", async (req, res) => {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const savedUser = await new User({
-      //serialNumber: (await User.find()).length + 1,
       email,
       name: fullname,
       passwordHash,
@@ -145,7 +140,6 @@ router.post("/signupfin", async (req, res) => {
       },
       process.env.JWT_SECRET as string
     );
-
     res
       .cookie("jwt", token, {
         httpOnly: true,
@@ -255,8 +249,7 @@ router.post("/passresreq", async (req, res) => {
         clientError: "An account with this email couldn't been found",
       });
     const key = Math.floor(Math.random() * 1000000);
-    const savedRequest = await new RequestForPassChange({
-      //serialNumber: (await RequestForPassChange.find()).length + 1,
+    await new RequestForPassChange({
       email,
       key,
     }).save();
@@ -282,9 +275,6 @@ router.post("/passresfin", async (req, res) => {
         clientError: "At least one of the fields are missing",
       });
 
-    // Minimum password score
-
-    // Check password strength
     const passwordStrength = zxcvbn(password);
 
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -299,11 +289,6 @@ router.post("/passresfin", async (req, res) => {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const user = (await User.find({ email }))[0];
-    // user.neurons = user.neurons | 0;
-    //user.deactivated = false;
-    //user.notifications = false;
-    //user.newsletter = false;
-    //user.deleted = false;
     user.passwordHash = passwordHash;
     await user.save();
     res.json({ changed: "yes" });
@@ -331,8 +316,6 @@ router.post("/updaten", async (req, res) => {
     const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
     const userId = (validatedUser as JwtPayload).id;
     const user = (await User.find({ userId }))[0];
-    // user.notifications = notifications;
-    // user.newsletter = newsletter;
     await user.save();
     res.json({ changed: "yes" });
   } catch (err) {
