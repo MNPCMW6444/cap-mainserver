@@ -6,7 +6,7 @@ const requestForPassChangeModal = new mongoose.Schema(
       type: String,
       required: true,
     },
-    uuid: {
+    key: {
       type: String,
       required: true,
     },

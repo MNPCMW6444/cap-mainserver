@@ -6,7 +6,7 @@ const requestForAccountModal = new mongoose.Schema(
       type: String,
       required: true,
     },
-    uuid: {
+    key: {
       type: String,
       required: true,
     },

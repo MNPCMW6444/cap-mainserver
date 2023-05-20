@@ -8,7 +8,7 @@ import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../external-api-s/email";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as keyv4 } from "uuid";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -76,14 +76,14 @@ router.post("/signupreq", async (req, res) => {
         clientError: "An account with this email already exists",
       });
 
-    const uuid = uuidv4();
+    const key = keyv4();
 
     await new RequestForAccount({
       email,
-      uuid,
+      key,
     }).save();
 
-    const url = `${process.env.CLIENT_URL}/verify/${uuid}`;
+    const url = `https://caphub.ai/register?key=${key}`;
 
     const { subject, body } = signupreq(url);
 
@@ -105,13 +105,13 @@ router.post("/signupreq", async (req, res) => {
 
 router.post("/signupfin", async (req, res) => {
   try {
-    const { email, uuid, fullname, password, passwordagain } = req.body;
-    if (!email || !uuid || !fullname || !password || !passwordagain)
+    const { email, key, fullname, password, passwordagain } = req.body;
+    if (!email || !key || !fullname || !password || !passwordagain)
       return res.status(400).json({
         clientError: "At least one of the fields are missing",
       });
 
-    const existingSignupRequest = await RequestForAccount.findOne({ uuid });
+    const existingSignupRequest = await RequestForAccount.findOne({ key });
     if (!existingSignupRequest) {
       return res
         .status(400)
@@ -138,7 +138,7 @@ router.post("/signupfin", async (req, res) => {
       });
     if (!existingSignupRequest || existingSignupRequest.email !== email)
       return res.status(400).json({
-        clientError: "The uuid is wrong",
+        clientError: "The key is wrong",
       });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -262,14 +262,14 @@ router.post("/passresreq", async (req, res) => {
         clientError: "An account with this email couldn't been found",
       });
 
-    const uuid = uuidv4();
+    const key = keyv4();
 
     await new RequestForPassChange({
       email,
-      uuid,
+      key,
     }).save();
 
-    const url = `${process.env.CLIENT_URL}/verify/${uuid}`;
+    const url = `https://caphub.ai/reset?key=${key}`;
 
     const { subject, body } = passreset(url);
 
@@ -288,13 +288,13 @@ router.post("/passresreq", async (req, res) => {
 
 router.post("/passresfin", async (req, res) => {
   try {
-    const { email, uuid, password, passwordagain } = req.body;
-    if (!email || !uuid || !password || !passwordagain)
+    const { email, key, password, passwordagain } = req.body;
+    if (!email || !key || !password || !passwordagain)
       return res.status(400).json({
         clientError: "At least one of the fields are missing",
       });
 
-    const existingPassChangeReq = await RequestForPassChange.findOne({ uuid });
+    const existingPassChangeReq = await RequestForPassChange.findOne({ key });
     if (!existingPassChangeReq || existingPassChangeReq.email !== email) {
       return res
         .status(400)
