@@ -7,7 +7,7 @@ const requestForAccountModal = new mongoose.Schema(
       required: true,
     },
     key: {
-      type: Number,
+      type: String,
       required: true,
     },
   },

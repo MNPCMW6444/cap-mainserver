@@ -8,6 +8,7 @@ import { passreset, signupreq } from "../../content/email-templates/authEmails";
 import RequestForPassChange from "../models/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../external-api-s/email";
+import { v4 as keyv4 } from "uuid";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
@@ -74,15 +75,19 @@ router.post("/signupreq", async (req, res) => {
       return res.status(400).json({
         clientError: "An account with this email already exists",
       });
-    const key = Math.floor(Math.random() * 1000000);
-    const savedRequest = await new RequestForAccount({
-      //serialNumber: (await RequestForAccount.find()).length + 1,
 
+    const key = keyv4();
+
+    await new RequestForAccount({
       email,
       key,
     }).save();
 
-    sendEmail(email, "Please Activate your CapHub account", signupreq(key))
+    const url = `https://caphub.ai/register?key=${key}`;
+
+    const { subject, body } = signupreq(url);
+
+    sendEmail(email, subject, body)
       .then(() => console.log("sent registration email"))
       .catch((err) => console.error(err));
 
@@ -100,16 +105,21 @@ router.post("/signupreq", async (req, res) => {
 
 router.post("/signupfin", async (req, res) => {
   try {
-    const { email, key, fullname, password, passwordagain } = req.body;
-    if (!email || !key || !fullname || !password || !passwordagain)
+    const { key, fullname, password, passwordagain } = req.body;
+    if (!key || !fullname || !password || !passwordagain)
       return res.status(400).json({
         clientError: "At least one of the fields are missing",
       });
 
-    // Minimum password score
+    const existingSignupRequest = await RequestForAccount.findOne({ key });
+    if (!existingSignupRequest) {
+      return res
+        .status(400)
+        .json({ clientError: "Invalid or expired signup link" });
+    }
+
     const MIN_PASSWORD_STRENGTH = 3;
 
-    // Check password strength
     const passwordStrength = zxcvbn(password);
 
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -121,21 +131,21 @@ router.post("/signupfin", async (req, res) => {
       return res.status(400).json({
         clientError: "Passwords doesn't match",
       });
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({
+      email: existingSignupRequest.email,
+    });
     if (existingUser)
       return res.status(400).json({
         clientError: "An account with this email already exists",
       });
-    const existingKey = await RequestForAccount.findOne({ key });
-    if (!existingKey || existingKey.email !== email)
+    if (!existingSignupRequest)
       return res.status(400).json({
         clientError: "The key is wrong",
       });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const savedUser = await new User({
-      //serialNumber: (await User.find()).length + 1,
-      email,
+      email: existingSignupRequest.email,
       name: fullname,
       passwordHash,
     }).save();
@@ -145,7 +155,6 @@ router.post("/signupfin", async (req, res) => {
       },
       process.env.JWT_SECRET as string
     );
-
     res
       .cookie("jwt", token, {
         httpOnly: true,
@@ -254,14 +263,19 @@ router.post("/passresreq", async (req, res) => {
       return res.status(400).json({
         clientError: "An account with this email couldn't been found",
       });
-    const key = Math.floor(Math.random() * 1000000);
-    const savedRequest = await new RequestForPassChange({
-      //serialNumber: (await RequestForPassChange.find()).length + 1,
+
+    const key = keyv4();
+
+    await new RequestForPassChange({
       email,
       key,
     }).save();
 
-    sendEmail(email, "Please Activate your CapHub account", passreset(key))
+    const url = `https://caphub.ai/reset?key=${key}`;
+
+    const { subject, body } = passreset(url);
+
+    sendEmail(email, subject, body)
       .then(() => console.log("sent password reset email"))
       .catch((err) => console.error(err));
 
@@ -282,9 +296,13 @@ router.post("/passresfin", async (req, res) => {
         clientError: "At least one of the fields are missing",
       });
 
-    // Minimum password score
+    const existingPassChangeReq = await RequestForPassChange.findOne({ key });
+    if (!existingPassChangeReq || existingPassChangeReq.email !== email) {
+      return res
+        .status(400)
+        .json({ clientError: "Invalid or expired pass-reset link" });
+    }
 
-    // Check password strength
     const passwordStrength = zxcvbn(password);
 
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -299,11 +317,6 @@ router.post("/passresfin", async (req, res) => {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const user = (await User.find({ email }))[0];
-    // user.neurons = user.neurons | 0;
-    //user.deactivated = false;
-    //user.notifications = false;
-    //user.newsletter = false;
-    //user.deleted = false;
     user.passwordHash = passwordHash;
     await user.save();
     res.json({ changed: "yes" });
@@ -331,8 +344,6 @@ router.post("/updaten", async (req, res) => {
     const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
     const userId = (validatedUser as JwtPayload).id;
     const user = (await User.find({ userId }))[0];
-    // user.notifications = notifications;
-    // user.newsletter = newsletter;
     await user.save();
     res.json({ changed: "yes" });
   } catch (err) {
