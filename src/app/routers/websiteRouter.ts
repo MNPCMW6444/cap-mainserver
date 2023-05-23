@@ -1,8 +1,8 @@
 import { WebsiteFormData } from "@caphub-group/caphub-types";
 import express from "express";
-import SavedToDBWebsiteForm from "../models/SavedToDBWebsiteForm";
-import SavedToDBWebsiteFormClean from "../models/SavedToDBWebsiteFormClean";
-import userModel from "../models/userModel";
+import SavedToDBWebsiteForm from "../models/website/SavedToDBWebsiteForm";
+import SavedToDBWebsiteFormClean from "../models/website/SavedToDBWebsiteFormClean";
+import userModel from "../models/auth/userModel";
 const router = express.Router();
 
 router.post("/calculate", async (req, res) => {

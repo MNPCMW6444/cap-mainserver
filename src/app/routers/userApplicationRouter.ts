@@ -1,9 +1,8 @@
 import express from "express";
-import UserApplication from "../models/userApplicationModel";
 import { WebsiteFormData } from "@caphub-group/caphub-types";
-import SavedToDBWebsiteForm from "../models/SavedToDBWebsiteForm";
-import userModel from "../models/userModel";
-import SavedToDBWebsiteFormClean from "../models/SavedToDBWebsiteFormClean";
+import SavedToDBWebsiteForm from "../models/website/SavedToDBWebsiteForm";
+import userModel from "../models/auth/userModel";
+import SavedToDBWebsiteFormClean from "../models/website/SavedToDBWebsiteFormClean";
 
 const router = express.Router();
 

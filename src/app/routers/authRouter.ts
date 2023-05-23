@@ -1,11 +1,11 @@
 import express from "express";
 import linkedinRouter from "./auth/linkdeinRouter";
-import User from "../models/userModel";
+import User from "../models/auth/userModel";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import RequestForAccount from "../models/requestForAccountModal";
+import RequestForAccount from "../models/auth/requestForAccountModal";
 import { passreset, signupreq } from "../../content/email-templates/authEmails";
-import RequestForPassChange from "../models/requestForPassChangeModal";
+import RequestForPassChange from "../models/auth/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../external-api-s/email";
 import { v4 as keyv4 } from "uuid";
