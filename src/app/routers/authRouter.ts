@@ -9,21 +9,11 @@ import RequestForPassChange from "../models/requestForPassChangeModal";
 import zxcvbn from "zxcvbn";
 import { sendEmail } from "../external-api-s/email";
 import { v4 as keyv4 } from "uuid";
+import speakeasy from "speakeasy";
+import qrcode from "qrcode";
 
 const router = express.Router();
 const MIN_PASSWORD_STRENGTH = 3;
-
-router.get("/signedin", async (req, res) => {
-  try {
-    const token = req.cookies.jwt;
-    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
-    const userId = (validatedUser as JwtPayload).id;
-    res.json(await User.findById(userId));
-  } catch (err) {
-    return res.status(401).json({ errorMessage: "Unauthorized." });
-  }
-});
 
 router.post("/signupreq", async (req, res) => {
   try {
@@ -80,6 +70,8 @@ router.post("/signupfin", async (req, res) => {
         .json({ clientError: "Invalid or expired signup link" });
     }
 
+    const MIN_PASSWORD_STRENGTH = 3;
+
     const passwordStrength = zxcvbn(password);
 
     if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
@@ -98,7 +90,10 @@ router.post("/signupfin", async (req, res) => {
       return res.status(400).json({
         clientError: "An account with this email already exists",
       });
-
+    if (!existingSignupRequest)
+      return res.status(400).json({
+        clientError: "The key is wrong",
+      });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const savedUser = await new User({
@@ -106,14 +101,12 @@ router.post("/signupfin", async (req, res) => {
       name: fullname,
       passwordHash,
     }).save();
-
     const token = jwt.sign(
       {
         id: savedUser._id,
       },
       process.env.JWT_SECRET as string
     );
-
     res
       .cookie("jwt", token, {
         httpOnly: true,
@@ -182,6 +175,99 @@ router.post("/signin", async (req, res) => {
     res
       .status(500)
       .json({ serverError: "Unexpected error occurred in the server" });
+  }
+});
+
+router.post("/2fa-setup", async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const userId = (validatedUser as JwtPayload).id;
+    const user = await User.findById(userId);
+
+    if (!user) res.status(401).json({ clientError: "Unauthorized" });
+    else {
+      const secret = speakeasy.generateSecret({ length: 20 });
+      user.twoFactorSecret = secret.base32;
+      user.isTwoFactorEnabled = false; // Do not enable until verified
+      await user.save();
+
+      const dataUrl = await qrcode.toDataURL(secret.otpauth_url || "");
+      res.json({ dataUrl });
+    }
+  } catch (err) {
+    // handle error
+  }
+});
+
+router.post("/2fa-verify", async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const { twoFactorCode } = req.body;
+    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const userId = (validatedUser as JwtPayload).id;
+    const user = await User.findById(userId);
+
+    if (!user) res.status(401).json({ clientError: "Unauthorized" });
+    else {
+      const verified = speakeasy.totp.verify({
+        secret: user.twoFactorSecret,
+        encoding: "base32",
+        token: twoFactorCode,
+      });
+
+      if (verified) {
+        user.isTwoFactorEnabled = true; // Enable 2FA
+        await user.save();
+        res.json({ verified: true });
+      } else {
+        res
+          .status(400)
+          .json({ verified: false, clientError: "Invalid 2FA code." });
+      }
+    }
+  } catch (err) {
+    // handle error
+  }
+});
+
+router.post("/updatename", async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const { name } = req.body;
+    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
+    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const userId = (validatedUser as JwtPayload).id;
+    const user = await User.findById(userId);
+    if (user) user.name = name;
+    await user?.save();
+    res.json(user);
+  } catch (err) {
+    return res.status(401).json({ errorMessage: "Unauthorized." });
+  }
+});
+
+router.post("/updatepassword", async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const { password } = req.body;
+    const passwordStrength = zxcvbn(password);
+    if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
+      return res.status(400).json({
+        clientError:
+          "Password isn't strong enough, the value is" + passwordStrength.score,
+      });
+    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
+    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const userId = (validatedUser as JwtPayload).id;
+    const user = await User.findById(userId);
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+    if (user) user.passwordHash = passwordHash;
+    await user?.save();
+    res.json(user);
+  } catch (err) {
+    return res.status(401).json({ errorMessage: "Unauthorized." });
   }
 });
 
@@ -285,41 +371,39 @@ router.post("/passresfin", async (req, res) => {
   }
 });
 
-router.post("/updatename", async (req, res) => {
+router.post("/updaten", async (req, res) => {
   try {
+    const { notifications, newsletter } = req.body;
+    if (
+      (notifications !== true && notifications !== false) ||
+      (newsletter !== true && newsletter !== false)
+    )
+      return res.status(400).json({
+        clientError: "At least one of the fields are missing",
+      });
+
     const token = req.cookies.jwt;
-    const { name } = req.body;
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
     const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
     const userId = (validatedUser as JwtPayload).id;
-    const user = await User.findById(userId);
-    if (user) user.name = name;
-    await user?.save();
-    res.json(user);
+    const user = (await User.find({ userId }))[0];
+    await user.save();
+    res.json({ changed: "yes" });
   } catch (err) {
-    return res.status(401).json({ errorMessage: "Unauthorized." });
+    console.error(err);
+    res
+      .status(500)
+      .json({ serverError: "Unexpected error occurred in the server" });
   }
 });
 
-router.post("/updatepassword", async (req, res) => {
+router.get("/signedin", async (req, res) => {
   try {
     const token = req.cookies.jwt;
-    const { password } = req.body;
-    const passwordStrength = zxcvbn(password);
-    if (passwordStrength.score < MIN_PASSWORD_STRENGTH)
-      return res.status(400).json({
-        clientError:
-          "Password isn't strong enough, the value is" + passwordStrength.score,
-      });
     if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
     const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
     const userId = (validatedUser as JwtPayload).id;
-    const user = await User.findById(userId);
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
-    if (user) user.passwordHash = passwordHash;
-    await user?.save();
-    res.json(user);
+    res.json(await User.findById(userId));
   } catch (err) {
     return res.status(401).json({ errorMessage: "Unauthorized." });
   }

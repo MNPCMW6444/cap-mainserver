@@ -13,6 +13,8 @@ const UserSchema = new Schema(
       required: true,
     },
     passwordHash: { type: String, required: true },
+    twoFactorSecret: { type: String },
+    isTwoFactorEnabled: { type: Boolean, default: false },
   },
   {
     timestamps: true,
