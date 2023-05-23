@@ -3,6 +3,7 @@ import { WebsiteFormData } from "@caphub-group/caphub-types";
 import SavedToDBWebsiteForm from "../models/website/SavedToDBWebsiteForm";
 import userModel from "../models/auth/userModel";
 import SavedToDBWebsiteFormClean from "../models/website/SavedToDBWebsiteFormClean";
+import uploadFile from "../util/uploadFile";
 
 const router = express.Router();
 
@@ -32,6 +33,10 @@ router.get("/", async (req, res) => {
       .status(500)
       .json({ message: "An error occurred while processing the request." });
   }
+});
+
+router.post("/upload", uploadFile.single("file"), (_, res) => {
+  res.redirect("/areyoualive");
 });
 
 export default router;
